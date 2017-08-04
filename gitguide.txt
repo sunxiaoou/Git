@@ -1,0 +1,189 @@
+﻿http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000
+
+1.1 Create repository
+
+$ cd ~/student
+$ mkdir Git
+$ cd Git
+$ git help                              # on line help
+$ git help init                         # see specified sub command
+$ git init                              # initialize a empty repository
+
+$ vi readme.txt                         # create a text file
+$ git add readme.txt                    # add to stage from work area
+$ git commit -m "wrote a readme file"   # add to current branch from stage
+
+
+1.2 See status
+
+$ vi readme.txt                         # modify file
+$ git status                            # see status before add
+$ git diff readme.txt                   # see change detail
+$ git add readme.txt
+$ git status                            # see status before commit
+$ git commit -m "add distributed"
+$ git status                            # see nothing
+
+
+1.3 Drop work area
+
+$ vi readme.txt                 # modfiy file
+$ git diff                      # see change
+$ git checkout -- readme.txt    # drop work area
+$ git diff                      # see nothing
+
+
+1.4 Back out stage
+
+$ vi readme.txt                 # modfiy file
+$ git add readme.txt            # add to stage
+$ git diff                      # see nothing
+$ git status                    # see change
+$ git reset HEAD readme.txt     # unstaged
+$ git checkout -- readme.txt    # drop work area
+$ git status                    # see nothing
+
+
+1.5 Back out to specified version
+
+$ git log                       # see commit id
+$ git log --pretty=oneline
+1b37bcbc4dfae47e11316865dbe21629831f0f30 branch test
+9b25c20bcb8e58467dc7c824d90fb1281adfb438 add license
+00cb56634481a00fe8754b56161342eb9f658451 append GPL
+1b3e4f35651cd0e168e4422d812e465f66987438 add distributed
+29178a875b3fe88732c0dcae484c0dd07ca32c90 wrote a readme file
+
+$ git reset --hard 9b25c        # back to version of  commit id (needs only first few letters)
+$ git reset --hard HEAD^        # Or, back to previous version
+
+$ git reflog                    # see history of commit id, so you can still return 1b37bcb
+9b25c20 HEAD@{0}: reset: moving to HEAD^
+1b37bcb HEAD@{1}: merge dev: Fast-forward
+9b25c20 HEAD@{2}: checkout: moving from dev to master
+1b37bcb HEAD@{3}: commit: branch test
+9b25c20 HEAD@{4}: checkout: moving from master to dev
+9b25c20 HEAD@{5}: commit: add license
+00cb566 HEAD@{6}: commit: append GPL
+1b3e4f3 HEAD@{7}: commit: add distributed
+29178a8 HEAD@{8}: commit (initial): wrote a readme file
+
+
+1.6 Remove file
+
+$ echo "test" > test.txt
+$ git add test.txt
+$ git commit -m "add test.txt"
+
+$ rm test.txt                       # drop work area
+$ git rm test.txt                   # drop stage
+$ git commit -m "remove test.txt"   # remove from branch
+
+
+2. Remote repository (GitHub)
+
+2.0 Prerequisite
+
+1) Apply for a GitHub account
+2) Add .ssh/id_rsa.pub local machine to GitHub account
+3) Create homogeneous remote repository
+4) Add following sentence in SSH config (whose mode must be 600)
+
+$ cd
+$ cat .ssh/config
+Host github.com
+  ProxyCommand /bin/nc -X connect -x cn-proxy.jp.oracle.com:80 %h %p
+  ForwardX11 no
+  IdentityFile ~/.ssh/id_rsa
+
+
+2.1 Push local repository to remote
+
+$ cd ~/student/Git
+$ git remote add origin git@github.com:myuser/Git.git   # associate remote repository "origin"
+$ git push -u origin master         # first push master "origin" to with "-u"
+                                    # git maybe needs password here (“abc123”)
+$ git push origin master            # from now on, push like this
+
+
+2.2 Integrate from repository
+
+$ cd ~/student/Git
+$ git pull origin master            # maybe need to merge here
+
+
+2.3 Clone from remote repository
+
+$ cd ..
+$ git clone git@github.com:myuser/Git.git Git2  # clone to local repository Git2
+
+$ cd Git2
+$ git remote -v                    # see remote repository and fetch / push privileges
+origin  git@github.com:myuser/Git.git (fetch)
+origin  git@github.com:myuser/Git.git (push)
+
+
+
+3. Branches
+
+3.1 Create and merge branch
+
+$ cd ~/student/Git
+$ git checkout -b dev           # create new branch "dev" and switch to it
+$ git branch                    # show branches, "*" means current one
+* dev
+  master
+
+Here done some changes and commited to branch "dev".
+
+$ git checkout master           # switch to master
+$ git merge dev                 # merge dev to master
+$ git branch -d dev             # remove branch dev
+$ git branch
+* master
+
+Keep branch info after merge / removal.
+$ git merge --no-ff -m "merged dev" dev
+
+
+3.2 Resolve conflicts
+
+$ git branch                    # if a file changed on both branches ...
+* master
+  feature1
+
+$ git merge feature1            # report error and append feature1's change automaticly
+Auto-merging readme.txt
+CONFLICT (content): Merge conflict in readme.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+$ vi readme.txt                 # need to merge changes manually
+
+$ git add readme.txt            # add and commit again
+$ git commit -m "conflict fixed"
+
+$ git log --graph --pretty=oneline --abbrev-commit      # see result of merge
+*   c7a1b38 conflict fixed
+|\
+| * aa9a8e2 feature1 changed
+* | 2310f21 master changed
+|/
+
+$ git branch -d feature1        # remove
+
+
+
+GlassFish
+
+http://aseng-wiki.us.oracle.com/asengwiki/display/JavaEE/GlassFish+Fork+Pull+Request+Based+Workflow+on+GitHub#GlassFishForkPullRequestBasedWorkflowonGitHub-Onetimesetup
+
+clone to local at ~/bg/glassfish
+
+$ cd ~/bg/glassfish/
+$ mvn install                   # build glassfish
+
+
+Setup IntelliJ IDEA
+in welcome panel, Open ~/bg/glassfish/pom.xml directly.
+
+Add a new debug configuration “glassfish” based on Remote theme, set host / port to localhost / 9009
