@@ -84,17 +84,20 @@ $ git commit -m "remove test.txt"   # remove from branch
 
 2.0 Prerequisite
 
-1) Apply for a GitHub account
-2) Add .ssh/id_rsa.pub local machine to GitHub account
-3) Create homogeneous remote repository
-4) Add following sentence in SSH config (whose mode must be 600)
+1) Generate a pair of authentication keys (empty for no passphrase)
+$ ssh-keygen -t rsa -C "sun_xiaoou@qq.com"
 
+2) Add following sentence in SSH config (whose mode must be 600)
 $ cd
 $ cat .ssh/config
 Host github.com
   ProxyCommand /bin/nc -X connect -x cn-proxy.jp.oracle.com:80 %h %p
   ForwardX11 no
   IdentityFile ~/.ssh/id_rsa
+
+2) Apply for a GitHub account
+3) Add .ssh/id_rsa.pub local machine to GitHub account
+4) Create homogeneous remote repository
 
 
 2.1 Push local repository to remote
