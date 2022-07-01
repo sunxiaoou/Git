@@ -1,2 +1,0 @@
-git+https://github.com/gethue/django-babel.git
-git+https://github.com/gethue/django-mako.git
