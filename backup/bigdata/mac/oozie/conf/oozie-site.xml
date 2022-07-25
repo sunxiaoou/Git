@@ -63,6 +63,14 @@
 
     -->
     <property>
+        <name>oozie.action.sqoop.shellsplitter</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>oozie.processing.timezone</name>
+        <value>GMT+0800</value>
+    </property>
+    <property>
         <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
         <value>*=/Users/sun_xo/work/hadoop/etc/hadoop/</value>
     </property>

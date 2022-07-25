@@ -1,0 +1,37 @@
+<workflow-app name="cvtbone" xmlns="uri:oozie:workflow:0.5">
+    <start to="ssh-d3f8"/>
+    <kill name="Kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <action name="ssh-d3f8">
+        <ssh xmlns="uri:oozie:ssh-action:0.1">
+            <host>localhost</host>
+            <command>~/work/oozie-5.2.1/oozie/apps/hue/xq2mysql.sh</command>
+            <args>cvtb</args>
+            <capture-output/>
+        </ssh>
+        <ok to="ssh-18d7"/>
+        <error to="Kill"/>
+    </action>
+    <action name="ssh-18d7">
+        <ssh xmlns="uri:oozie:ssh-action:0.1">
+            <host>localhost</host>
+            <command>~/work/oozie-5.2.1/oozie/apps/hue/last_timestamp.sh</command>
+            <capture-output/>
+        </ssh>
+        <ok to="ssh-0efc"/>
+        <error to="Kill"/>
+    </action>
+    <action name="ssh-0efc">
+        <ssh xmlns="uri:oozie:ssh-action:0.1">
+            <host>localhost</host>
+            <command>~/work/oozie-5.2.1/oozie/apps/hue/mysql2hive.sh</command>
+            <args>${wf:actionData(ssh-18d7)[last_ts]}</args>
+            <capture-output/>
+        </ssh>
+        <ok to="End"/>
+        <error to="Kill"/>
+    </action>
+    <end name="End"/>
+</workflow-app>
+

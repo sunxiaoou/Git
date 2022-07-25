@@ -15,38 +15,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<workflow-app xmlns="uri:oozie:workflow:1.0" name="shell-wf">
-    <start to="shell-node"/>
-    <action name="shell-node">
-        <shell xmlns="uri:oozie:shell-action:1.0">
-            <resource-manager>${resourceManager}</resource-manager>
-            <name-node>${nameNode}</name-node>
-            <configuration>
-                <property>
-                    <name>mapred.job.queue.name</name>
-                    <value>${queueName}</value>
-                </property>
-            </configuration>
-            <exec>${EXEC}</exec>
-            <file>${nameNode}/${oozieRoot}/apps/shell/${EXEC}#${EXEC}</file>
+<workflow-app xmlns="uri:oozie:workflow:1.0" name="ssh-wf">
+    <start to="ssh-node"/>
+    <action name="ssh-node">
+        <ssh xmlns="uri:oozie:ssh-action:0.1">
+            <host>localhost</host>
+            <command>~/work/oozie-5.2.1/oozie/apps/ssh/mushishi.sh</command>
+            <args>"Ginko"</args>
             <capture-output/>
-        </shell>
+        </ssh>
         <ok to="check-output"/>
         <error to="fail"/>
     </action>
     <decision name="check-output">
         <switch>
             <case to="end">
-                ${wf:actionData('shell-node')['my_output'] eq 'Hello Mushishi'}
+                ${wf:actionData('ssh-node')['Mushishi'] eq 'Ginko'}
             </case>
             <default to="fail-output"/>
         </switch>
     </decision>
-    <kill name="fail">
-        <message>Shell action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
-    </kill>
     <kill name="fail-output">
-        <message>Incorrect output, expected [Hello Mushishi] but was [${wf:actionData('shell-node')['my_output']}]</message>
+        <message>Incorrect output, expected [Ginko] but was [${wf:actionData('ssh-node')['Mushishi']}]</message>
+    </kill>
+    <kill name="fail">
+        <message>SSH action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
     </kill>
     <end name="end"/>
 </workflow-app>

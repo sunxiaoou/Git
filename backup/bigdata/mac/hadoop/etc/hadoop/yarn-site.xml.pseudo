@@ -14,7 +14,7 @@
 -->
 <configuration>
     <property>
-        <name>yarn.resourceManager.hostname</name>
+        <name>yarn.resourcemanager.hostname</name>
         <value>localhost</value>
     </property>
     <property>
@@ -31,7 +31,7 @@
     </property>
     <property>
         <name>yarn.log-aggregation.retain-seconds</name>
-        <value>604800</value>
+        <value>86400</value>
     </property>
     <property>
         <name>yarn.log.server.url</name>
