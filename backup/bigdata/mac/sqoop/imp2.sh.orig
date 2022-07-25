@@ -1,0 +1,11 @@
+#!/bin/sh
+
+imp_dir=/user/manga/sqoop/instant_price
+timestamp="2207201504"
+
+bin/sqoop import \
+    --connect jdbc:mysql://localhost:3306/finance --username manga --password manga \
+    --driver com.mysql.cj.jdbc.Driver \
+    --query "select * from instant_price where ts > str_to_date($timestamp, \"%y%m%d%H%i\") AND \$CONDITIONS" \
+    --target-dir $imp_dir --num-mappers 1 --delete-target-dir
+hdfs dfs -text "$imp_dir/*"
